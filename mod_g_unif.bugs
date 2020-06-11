@@ -1,0 +1,56 @@
+model{
+
+	# setting data matrix using centered data
+	for (i in 1:n){ for (j in 1:P){
+	X[i,j]<-x[i,j] - mean( x[,j] )
+	}}
+	
+	# calculating the xtx matrix
+	for (j in 1:P){ for (k in 1:P ) {
+	XTX[j,k] <- inprod( X[1:n,j], X[1:n,k] )
+	}}
+	
+	# gb parameters (multiplied by zero – BMA estimates of betas)
+	for (j in 2:P){ gb[j] <- beta[j]*g[j] } 
+	gb[1] <- beta[1]
+	# likelihood specification
+	for (i in 1:n){
+	y[i] ~ dnorm( mu[i], tau )
+	mu[i] <- inprod( X[i,], gb[] )
+	}
+	
+	# priors
+	tau    ~ dgamma( 0.01, 0.01 )
+	
+	# Bernouli(0.5) for gammas => Uniform on model space
+	for (j in 1:P) { g[j]~dbern(0.5) }
+	
+	# Prior (and pseudoprior) for betas (here denoted by beta)
+	beta[1:P] ~ dmnorm( mean.beta[1:P], T[ 1:P, 1:P] )
+	# prior mean = 0.0 (for g[j]=1) – actual mean
+	# = proposal mean (for g[j]=0)– pseudo prior mean
+	
+	for (j in 1:P ){
+	mean.beta[j] <- (1-g[j])*prop.mean.beta[j] }
+	# prior precision = (X^T X)/G (for g[j]=1) – actual precision
+	# = Diag(prop.sd.beta^{-2}) otherwise
+	# – proposal precision
+	
+	for (j in 1:P ){ for (k in 1:P ){
+	T[j,k] <- g[j]*g[k]*tau*XTX[j,k]/G + ( 1-
+	g[j]*g[k])*equals(j,k)*pow(prop.sd.beta[k],-2)
+	}}
+	
+	for (j in 1:P){ mindex[j] <- pow(2,j)} # index needed for the calculation of model
+	
+	modello <- inprod( g[], mindex[] ) # model indicator/code
+
+	# calculate the probabilities models we want to control
+	pmodel[1] <- equals( modello, 1+pow(2,11))
+	pmodel[2] <- equals( modello, 1+pow(2,3)+pow(2,11))
+	pmodel[3] <- equals( modello, 1+pow(2,3)+pow(2,11)+pow(2,22))
+	# setting G parameter (of the g-prior) equal to n
+	G <- n
+	# posterior probabilities of positive beta's
+	p.beta[1:P] <- step( beta[1:P] )
+}

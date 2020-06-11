@@ -1,0 +1,28 @@
+model{
+    # prior
+	c2 <- n
+	# prior means
+    for (j in 1:P){ mu.beta[j] <- 0.0 }
+	
+    # calculation of xtx
+    for (i in 1:P){ for (j in 1:P){ 
+       inverse.V[i,j] <- inprod( x[,i] , x[,j] )
+    }}
+    for(i in 1:P){ for (j in 1:P){
+      prior.T[i,j] <- inverse.V[i,j] * tau /c2
+    }}
+    
+    # likelihood
+    
+		for (i in 1:n){
+		
+		    y[i] ~ dnorm( mu[i], tau ) # stochastic componenent
+			mu[i] <- inprod( beta[], x[i,] )
+		}
+		
+	# prior distributions
+    beta[1:P] ~ dmnorm( mu.beta[], prior.T[,] )
+    tau    ~ dgamma( 0.01, 0.01 )  
+    s2    <- 1/tau 
+ 	s <-sqrt(s2)
+}

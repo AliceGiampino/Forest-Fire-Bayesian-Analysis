@@ -1,0 +1,42 @@
+model{
+    # prior
+	
+	#Beta Binomial on model space
+	for (j in 1:P) { g[j]~dbern(prob)  }
+	prob ~dbeta(1,1) 
+	
+	# setting data matrix using centered data
+	for (i in 1:n){ 
+			for (j in 1:P){ X[i,j]<-x[i,j] - mean( x[,j] )   } 
+	}
+	
+	
+	# calculating the xtx matrix
+	for (j in 1:P){ for (k in 1:P ) { 
+		  XTX[j,k] <- inprod( X[1:n,j], X[1:n,k] )
+	}}
+	for (j in 1:P){ mean.beta[j] <-  (1-g[j])*prop.mean.beta[j] }
+	  for (j in 1:P ){ for (k in 1:P ){ 
+	                    prior.T[j,k] <- g[j]*g[k]*tau*XTX[j,k]/G + ( 1- g[j]*g[k])*equals(j,k)*pow(prop.sd.beta[k],-2)
+	  }}
+    
+    # likelihood
+    
+		for (i in 1:n){
+		
+		     y[i] ~ dnorm( mu[i], tau ) # stochastic componenent
+				 mu[i] <- inprod( beta[], x[i,] )
+		}
+		
+	# prior distributions
+    beta[1:P] ~ dmnorm( mean.beta[1:P], prior.T[ 1:P, 1:P])
+    tau    ~ dgamma( 0.01, 0.01 )  
+    s2    <- 1/tau 
+ 	s <-sqrt(s2)
+	
+	# hyper-prior
+	   a <- 3 
+	   bw <- a/2-1	
+	   w ~ dbeta( 1, bw ) 
+	   G <- w/(1-w)
+}

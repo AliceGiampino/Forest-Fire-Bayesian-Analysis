@@ -1,0 +1,13 @@
+model{
+	for (i in 1:n_test){
+		y.hat[i] ~ dnorm( mu[i], tau ) # stochastic componenent
+		# link and linear predictor
+		mu[i] <- inprod( beta[], x_test[i,] )
+	}
+    # gamma prior for the precision
+    tau ~ dgamma( 0.01, 0.01 )  
+    # deterministic calculation of variance 
+    s2 <- 1/tau 
+ 	s <-sqrt(s2)
+ 	#	 
+}
