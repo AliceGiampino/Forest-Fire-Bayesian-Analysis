@@ -7,7 +7,7 @@ Forest fires are a major environmental issue, creating economical and ecological
 We aim to find a model useful to evaluate the probability of fires in different areas and
 with different climate conditions.
 
-Section:
+Sections:
 1) Description of the problem
 2) Model specification
 3) Model selection and model averaging
