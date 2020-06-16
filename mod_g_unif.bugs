@@ -40,17 +40,4 @@ model{
 	T[j,k] <- g[j]*g[k]*tau*XTX[j,k]/G + ( 1-
 	g[j]*g[k])*equals(j,k)*pow(prop.sd.beta[k],-2)
 	}}
-	
-	for (j in 1:P){ mindex[j] <- pow(2,j)} # index needed for the calculation of model
-	
-	modello <- inprod( g[], mindex[] ) # model indicator/code
-
-	# calculate the probabilities models we want to control
-	pmodel[1] <- equals( modello, 1+pow(2,11))
-	pmodel[2] <- equals( modello, 1+pow(2,3)+pow(2,11))
-	pmodel[3] <- equals( modello, 1+pow(2,3)+pow(2,11)+pow(2,22))
-	# setting G parameter (of the g-prior) equal to n
-	G <- n
-	# posterior probabilities of positive beta's
-	p.beta[1:P] <- step( beta[1:P] )
 }
