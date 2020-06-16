@@ -653,8 +653,10 @@ coef(final_bas, estimator = "BMA")
 final_bma <- bic.glm(area~., data=dati, glm.family="gaussian")
 summary(final_bma)
 
-plot(jags.f$mean$beta, pch=19, ylab=expression(beta), xlab="Coefficients", ylim=c(0.0, 3))
+plot(jags.f$mean$beta, pch=19, ylab=expression(beta), xlab="Coefficients", ylim=c(0.0, 3), xaxt='n')
 arrows(1:4, jags.f$q2.5$beta, 1:4, jags.f$q97.5$beta, angle = 90, length = 0.03)
+text(c(1.07,2,3,3.9), c(1.2, 0.5, 0.5, 1),
+     label=c("Intercept", "Temperature", "December", "September"))
 
 x11()
 plot(final_bas)
