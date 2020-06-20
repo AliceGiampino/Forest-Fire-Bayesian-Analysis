@@ -512,10 +512,10 @@ jags.g.u <- jagsUI::jags(model.file="mod_g_unif.bugs",
                              n.iter = 5000,
                              n.burnin = 2000,
                              n.adapt = 1000,
-                             parameters.to.save=c("beta", "p.beta", "pmodel"))
+                             parameters.to.save=c("beta"))
 
 jags.g.u # DIC = 2072
-col_names[which(jags.g.u$overlap0$beta==FALSE)]
+col_names[which(jags.g.u$overlap0$gb==FALSE)]
 # "DMC"       "month_dec"
 
 # g-prior - beta.binomial
@@ -535,7 +535,7 @@ jags.g.bb <- jagsUI::jags(model.file="mod_g_bb.bugs",
                          parameters.to.save=c("beta", "g"))
 
 jags.g.bb # DIC = 2069
-col_names[which(jags.g.bb$overlap0$beta==FALSE)]
+col_names[which(jags.g.bb$overlap0$gb==FALSE)]
 # "DMC" "month_dec"
 
 

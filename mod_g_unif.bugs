@@ -40,4 +40,6 @@ model{
 	T[j,k] <- g[j]*g[k]*tau*XTX[j,k]/G + ( 1-
 	g[j]*g[k])*equals(j,k)*pow(prop.sd.beta[k],-2)
 	}}
+	
+	G <- n
 }
